@@ -17,9 +17,9 @@
   --accent: light-dark(#a04d2d, #e9b294);
   --focus: light-dark(#687755, #b6c79a);
   --error: light-dark(#a33329, #ffb4a6);
-  --serif: Georgia, "Times New Roman", serif;
+  --serif: "Instrument Serif", Georgia, "Times New Roman", serif;
   font-family:
-    Inter,
+    "Geist Variable",
     -apple-system,
     BlinkMacSystemFont,
     "Segoe UI",
@@ -169,17 +169,23 @@ button.text-button {
   text-underline-offset: 4px;
 }
 .logo {
-  font: 600 1.95rem/1 var(--serif);
+  font:
+    650 1.62rem/1 "Geist Variable",
+    system-ui,
+    sans-serif;
   letter-spacing: -0.065em;
   display: inline-flex;
   align-items: center;
   gap: 0.6rem;
 }
-.logo svg {
+.logo img {
   width: 1.8rem;
   height: 1.8rem;
-  stroke-width: 1.9;
-  color: var(--primary);
+  flex: none;
+}
+.auth-home {
+  color: inherit;
+  text-decoration: none;
 }
 .auth {
   max-width: 1680px;

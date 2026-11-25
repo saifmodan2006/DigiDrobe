@@ -19,7 +19,7 @@ test("create an account, follow the local recovery email, and sign in with a new
     replacement = randomUUID();
   let owner: string | undefined;
   try {
-    await page.goto("/");
+    await page.goto("/account");
     await page
       .getByRole("button", { name: "Create an account", exact: true })
       .click();

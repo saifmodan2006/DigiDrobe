@@ -1,9 +1,10 @@
-import { Layers2 } from "lucide-react";
+import Image from "next/image";
+import mark from "../app/icon.svg";
 import { brand } from "../lib/config";
 export default function Logo() {
   return (
     <span className="logo">
-      <Layers2 aria-hidden="true" />
+      <Image src={mark} alt="" width={34} height={34} />
       {brand.name}
     </span>
   );

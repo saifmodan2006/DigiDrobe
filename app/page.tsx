@@ -1,4 +1,4 @@
-import Studio from "../components/Studio";
+import Landing from "../components/Landing";
 export default function Home() {
-  return <Studio />;
+  return <Landing />;
 }

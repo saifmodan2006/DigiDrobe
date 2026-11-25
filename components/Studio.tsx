@@ -33,7 +33,11 @@ const views = [
   ["Needs review", ClipboardCheck],
   ["Trash", Trash2],
 ] as const;
-export default function Studio() {
+export default function Studio({
+  initialMode = "login",
+}: {
+  initialMode?: "login" | "signup";
+}) {
   const [session, set] = useState<Session | null>(null),
     [loading, load] = useState(!!db),
     [recovery, reset] = useState(false);
@@ -86,6 +90,7 @@ export default function Studio() {
   if (!session || recovery)
     return (
       <Auth
+        initialMode={initialMode}
         recovery={!!session && recovery}
         onReset={() => {
           reset(false);

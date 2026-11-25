@@ -191,6 +191,10 @@
     // "external_url": "",
     // A list of *exact* URLs that auth providers are permitted to redirect to post authentication.
     "additional_redirect_urls": [
+      "http://localhost:3000/account",
+      "http://localhost:3000/account?recovery=1",
+      "http://127.0.0.1:3000/account",
+      "http://127.0.0.1:3000/account?recovery=1",
       "http://localhost:3000",
       "http://localhost:3000/?recovery=1",
       "http://127.0.0.1:3000/?recovery=1"

@@ -4,7 +4,7 @@ import brand from "../../lib/brand.json" with { type: "json" };
 test("sign in, account creation and password recovery remain keyboard accessible", async ({
   page,
 }, info) => {
-  await page.goto("/");
+  await page.goto("/account");
   await expect(
     page.getByRole("heading", { name: "Welcome back." }),
   ).toBeVisible();
@@ -71,7 +71,7 @@ test("sign in, account creation and password recovery remain keyboard accessible
 test("an unconfigured deployment explains why sign-in is unavailable", async ({
   page,
 }) => {
-  await page.goto("/");
+  await page.goto("/account");
   const submit = page
     .locator("form")
     .getByRole("button", { name: "Sign in", exact: true });

@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useRef, useState, type FormEvent } from "react";
+import Link from "next/link";
 import { Eye, EyeOff, LockKeyhole } from "lucide-react";
 import { brand } from "../lib/config";
 import { db, message } from "../lib/client";
@@ -7,12 +8,14 @@ import Logo from "./Logo";
 const minimumPasswordLength = 6;
 export default function Auth({
   recovery = false,
+  initialMode = "login",
   onReset,
 }: {
   recovery?: boolean;
+  initialMode?: "login" | "signup";
   onReset: () => void;
 }) {
-  const [mode, setMode] = useState<"login" | "signup" | "forgot">("login"),
+  const [mode, setMode] = useState<"login" | "signup" | "forgot">(initialMode),
     [visible, show] = useState(false),
     [notice, tell] = useState(""),
     [error, setError] = useState(""),
@@ -56,7 +59,7 @@ export default function Auth({
         const result = await db.auth.signUp({
           email,
           password,
-          options: { emailRedirectTo: location.origin },
+          options: { emailRedirectTo: location.origin + "/account" },
         });
         if (result.error) throw result.error;
         if (!result.data.session) {
@@ -71,7 +74,7 @@ export default function Auth({
         : mode === "login"
           ? await db.auth.signInWithPassword({ email, password })
           : await db.auth.resetPasswordForEmail(email, {
-              redirectTo: location.origin + "/?recovery=1",
+              redirectTo: location.origin + "/account?recovery=1",
             });
       if (result.error) throw result.error;
       if (recovery) {
@@ -108,7 +111,9 @@ export default function Auth({
   return (
     <main className="auth">
       <header>
-        <Logo />
+        <Link className="auth-home" href="/" aria-label={brand.name + " home"}>
+          <Logo />
+        </Link>
         <span>
           <LockKeyhole size={15} /> Private wardrobe
         </span>

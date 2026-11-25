@@ -90,7 +90,7 @@ export default function Settings({
           if (error) tell(error.message);
           else {
             sessionStorage.removeItem("wardrobe-filters-" + userId);
-            location.hash = "";
+            location.replace("/account");
           }
         }}
       >

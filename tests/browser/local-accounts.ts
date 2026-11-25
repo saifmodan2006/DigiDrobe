@@ -33,7 +33,7 @@ export async function signIn(
   page: Page,
   account: { email: string; password: string },
 ) {
-  await page.goto("/");
+  await page.goto("/account");
   await page.getByLabel("Email address").fill(account.email);
   await page.locator("input[name=password]").fill(account.password);
   await page

@@ -15,7 +15,7 @@ test("a new account signs up, sees an empty wardrobe, and can sign in again", as
   };
   let id: string | undefined;
   try {
-    await page.goto("/#Account");
+    await page.goto("/account#Account");
     await expect(
       page.getByRole("heading", { name: "Welcome back." }),
     ).toBeVisible();
@@ -39,7 +39,7 @@ test("a new account signs up, sees an empty wardrobe, and can sign in again", as
     await expect(
       page.getByRole("heading", { name: "Welcome back." }),
     ).toBeVisible();
-    await page.goto("/");
+    await page.goto("/account");
     await page
       .getByRole("button", { name: "Create an account", exact: true })
       .click();

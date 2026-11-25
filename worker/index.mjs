@@ -1,0 +1,51 @@
+import { setTimeout as pause } from "node:timers/promises";
+import { createClient } from "@supabase/supabase-js";
+import { configuredProvider, ProcessingError } from "./provider.mjs";
+import { cleanOrphans, runOne } from "./queue.mjs";
+
+const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+const service = process.env.SUPABASE_SERVICE_ROLE_KEY;
+if (!url || !service)
+  throw new Error(
+    "Configure NEXT_PUBLIC_SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY before starting the worker.",
+  );
+const db = createClient(url, service, {
+  auth: { persistSession: false, autoRefreshToken: false },
+});
+const provider = configuredProvider();
+let running = true,
+  nextCleanup = 0;
+process.once("SIGINT", () => {
+  running = false;
+});
+process.once("SIGTERM", () => {
+  running = false;
+});
+console.info(
+  "Photo worker started. Provider " +
+    (provider ? "configured." : "unavailable."),
+);
+while (running) {
+  try {
+    if (Date.now() >= nextCleanup) {
+      nextCleanup = Date.now() + 60000;
+      await cleanOrphans(db);
+    }
+    if (
+      !(await runOne(
+        db,
+        provider ?? {
+          remove() {
+            throw new ProcessingError("provider_unconfigured");
+          },
+        },
+      ))
+    )
+      await pause(1500);
+  } catch {
+    console.error(
+      "Photo worker could not access the queue or storage. Retrying.",
+    );
+    await pause(5000);
+  }
+}

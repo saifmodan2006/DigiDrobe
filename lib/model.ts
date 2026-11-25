@@ -1,0 +1,30 @@
+export interface Item {
+  id: string;
+  owner_id: string;
+  name: string;
+  category: string;
+  subtype: string;
+  color: string;
+  pattern: string;
+  tags: string[];
+  availability: string;
+  status: string;
+  favorite: boolean;
+  deleted_at: string | null;
+  created_at: string;
+  updated_at: string;
+  revision: number;
+  error_code?: string;
+  original_path?: string;
+  cutout_path?: string;
+  thumbnail_path?: string;
+  original?: string;
+  cutout?: string;
+  thumbnail?: string;
+  brand: string;
+  material: string;
+  size: string;
+  fit: string;
+  season: string;
+  occasion: string;
+}

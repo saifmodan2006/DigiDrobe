@@ -1,0 +1,36 @@
+{
+  "name": "drapedeck",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "repository": "https://github.com/saifmodan2006/drapedeck.git",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "worker": "node --env-file-if-exists=.env.local worker/index.mjs",
+    "test": "tsx --test tests/*.test.* worker/images.test.mjs",
+    "typecheck": "tsc --noEmit",
+    "brand": "node scripts/brand.mjs",
+    "e2e": "playwright test",
+    "local:env": "node scripts/local-env.mjs",
+    "dev:local": "node --env-file=.env.local scripts/dev-local.mjs"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "2.119.2",
+    "lucide-react": "1.80.0",
+    "next": "16.4.6",
+    "react": "19.3.1",
+    "react-dom": "19.3.1",
+    "sharp": "0.35.5"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.65.1",
+    "@types/node": "26.6.10",
+    "@types/react": "19.3.3",
+    "@types/react-dom": "19.3.0",
+    "supabase": "3.4.0",
+    "tsx": "4.23.15",
+    "typescript": "7.0.2"
+  }
+}

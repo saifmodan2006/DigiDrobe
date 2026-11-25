@@ -31,13 +31,15 @@ test("sign in, account creation and password recovery remain keyboard accessible
   await expect(password).toHaveAttribute("type", "password");
 
   await page
-    .getByRole("button", { name: "Create account", exact: true })
+    .getByRole("button", { name: "Create an account", exact: true })
     .click();
   await expect(
     page.getByRole("heading", { name: "Create your wardrobe." }),
   ).toBeVisible();
   await expect(password).toHaveAttribute("autocomplete", "new-password");
-  await page.getByRole("button", { name: "Sign in", exact: true }).click();
+  await page
+    .getByRole("button", { name: "Back to sign in", exact: true })
+    .click();
   await page.getByRole("button", { name: "Forgot password?" }).click();
   await expect(
     page.getByRole("heading", { name: "Reset your password." }),

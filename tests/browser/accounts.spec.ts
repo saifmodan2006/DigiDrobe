@@ -16,9 +16,23 @@ test("a new account signs up, sees an empty wardrobe, and can sign in again", as
   let id: string | undefined;
   try {
     await page.goto("/");
+    let signupRequests = 0;
+    page.on("request", (request) => {
+      if (new URL(request.url()).pathname.endsWith("/auth/v1/signup")) {
+        signupRequests++;
+      }
+    });
+    await page.getByLabel("Email address").fill(account.email);
+    await page.locator("input[name=password]").fill(account.password);
+    await page.getByRole("button", { name: "Sign in", exact: true }).click();
+    await expect(page.getByRole("main").getByRole("alert")).toContainText(
+      "Create an account",
+    );
+    expect(signupRequests).toBe(0);
     await page
-      .getByRole("button", { name: "Create account", exact: true })
+      .getByRole("button", { name: "Create an account", exact: true })
       .click();
+    await expect(page.locator("input[name=password]")).toHaveValue("");
     await page.getByLabel("Email address").fill(account.email);
     await page.locator("input[name=password]").fill(account.password);
     const completed = page.waitForResponse(

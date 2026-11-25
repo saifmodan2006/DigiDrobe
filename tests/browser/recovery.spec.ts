@@ -21,7 +21,7 @@ test("create an account, follow the local recovery email, and sign in with a new
   try {
     await page.goto("/");
     await page
-      .getByRole("button", { name: "Create account", exact: true })
+      .getByRole("button", { name: "Create an account", exact: true })
       .click();
     await page.getByLabel("Email address").fill(email);
     await page.locator("input[name=password]").fill(password);

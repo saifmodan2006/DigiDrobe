@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState, type FormEvent } from "react";
+import { useEffect, useRef, useState, type FormEvent } from "react";
 import { Eye, EyeOff, LockKeyhole } from "lucide-react";
 import { brand } from "../lib/config";
 import { db, message } from "../lib/client";
@@ -14,7 +14,10 @@ export default function Auth({
   const [mode, setMode] = useState<"login" | "signup" | "forgot">("login"),
     [visible, show] = useState(false),
     [notice, tell] = useState(""),
+    [error, setError] = useState(""),
     [busy, working] = useState(false);
+  const emailField = useRef<HTMLInputElement>(null);
+  const focusAfterSwitch = useRef(false);
   const heading = recovery
     ? "Choose a new password"
     : mode === "login"
@@ -32,43 +35,74 @@ export default function Auth({
           : "Reset password";
     document.title = screen + " · " + brand.name;
   }, [mode, recovery]);
+  useEffect(() => {
+    if (focusAfterSwitch.current) {
+      emailField.current?.focus();
+      focusAfterSwitch.current = false;
+    }
+  }, [mode]);
   async function submit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    if (!db) return;
+    if (!db || busy) return;
     const data = new FormData(e.currentTarget);
-    const email = String(data.get("email") || ""),
+    const email = String(data.get("email") || "").trim(),
       password = String(data.get("password") || "");
     working(true);
     tell("");
+    setError("");
     try {
+      if (!recovery && mode === "signup") {
+        const result = await db.auth.signUp({
+          email,
+          password,
+          options: { emailRedirectTo: location.origin },
+        });
+        if (result.error) throw result.error;
+        if (!result.data.session) {
+          tell(
+            "Check your inbox and follow the confirmation link to activate your account.",
+          );
+        }
+        return;
+      }
       const result = recovery
         ? await db.auth.updateUser({ password })
         : mode === "login"
           ? await db.auth.signInWithPassword({ email, password })
-          : mode === "signup"
-            ? await db.auth.signUp({
-                email,
-                password,
-                options: { emailRedirectTo: location.origin },
-              })
-            : await db.auth.resetPasswordForEmail(email, {
-                redirectTo: location.origin + "/?recovery=1",
-              });
+          : await db.auth.resetPasswordForEmail(email, {
+              redirectTo: location.origin + "/?recovery=1",
+            });
       if (result.error) throw result.error;
       if (recovery) {
         onReset();
-      } else if (mode === "forgot" || mode === "signup") {
+      } else if (mode === "forgot") {
         tell("Check your email for a link to continue.");
       }
     } catch (e) {
-      tell(message(e));
+      if (
+        mode === "login" &&
+        !recovery &&
+        e instanceof Error &&
+        "code" in e &&
+        e.code === "invalid_credentials"
+      ) {
+        setError(
+          "The email or password is incorrect. If you’re new to DrapeDeck, choose Create an account below.",
+        );
+      } else {
+        setError(message(e));
+      }
     } finally {
       working(false);
     }
   }
   function change(next: typeof mode) {
+    if (busy) return;
+    focusAfterSwitch.current = true;
     setMode(next);
     tell("");
+    setError("");
+    show(false);
   }
   return (
     <main className="auth">
@@ -100,24 +134,12 @@ export default function Auth({
                     ? "Keep your pieces and plan looks in one private space."
                     : "We’ll email you a recovery link."}
             </p>
-            {!recovery && mode !== "forgot" && (
-              <div className="switcher">
-                {(["login", "signup"] as const).map((m, i) => (
-                  <button
-                    key={m}
-                    aria-pressed={mode === m}
-                    onClick={() => change(m)}
-                  >
-                    {["Sign in", "Create account"][i]}
-                  </button>
-                ))}
-              </div>
-            )}
-            <form onSubmit={submit}>
+            <form onSubmit={submit} style={{ marginTop: "1.5rem" }}>
               {!recovery && (
                 <label>
                   Email address
                   <input
+                    ref={emailField}
                     name="email"
                     type="email"
                     autoComplete="email"
@@ -131,6 +153,7 @@ export default function Auth({
                   Password
                   <span className="password">
                     <input
+                      key={recovery ? "recovery" : mode}
                       name="password"
                       type={visible ? "text" : "password"}
                       autoComplete={
@@ -155,12 +178,17 @@ export default function Auth({
                 <button
                   type="button"
                   className="text-button forgot"
+                  disabled={busy}
                   onClick={() => change("forgot")}
                 >
                   Forgot password?
                 </button>
               )}
-              <button disabled={busy || !db} className="primary full">
+              <button
+                type="submit"
+                disabled={busy || !db}
+                className="primary full"
+              >
                 {busy
                   ? "Please wait…"
                   : recovery
@@ -172,10 +200,27 @@ export default function Auth({
                         : "Send recovery link"}
               </button>
             </form>
-            {mode === "forgot" && (
-              <button className="text-button" onClick={() => change("login")}>
-                Back to sign in
-              </button>
+            {error && (
+              <p className="notice" role="alert">
+                {error}
+              </p>
+            )}
+            {!recovery && (
+              <p>
+                {mode === "login"
+                  ? "New to " + brand.name + "? "
+                  : mode === "signup"
+                    ? "Already have an account? "
+                    : ""}
+                <button
+                  type="button"
+                  className="text-button"
+                  disabled={busy}
+                  onClick={() => change(mode === "login" ? "signup" : "login")}
+                >
+                  {mode === "login" ? "Create an account" : "Back to sign in"}
+                </button>
+              </p>
             )}
             <p role="status">{notice}</p>
             {!db && (

@@ -112,6 +112,14 @@ test(`upload three garments, recover a pending job, compare two looks and reopen
           ),
         ).toBeVisible();
       }
+      if (!photoDirectory) {
+        await expect(
+          active.getByRole("button", { name: "Save to wardrobe" }),
+        ).toBeDisabled();
+        await expect(
+          active.getByRole("button", { name: "Check status" }),
+        ).toBeEnabled();
+      }
       const itemId = decodeURIComponent(
         new URL(active.url()).hash.slice(1),
       ).split("/")[1];

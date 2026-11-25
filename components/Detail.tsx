@@ -59,6 +59,8 @@ export default function Detail({ item, go, refresh, styleItem }: Props) {
     photo({ action, itemId: item.id, revision: item.revision });
   const ready = item.status === "ready",
     editable = ready || item.status === "needs_review",
+    processing = item.status === "queued" || item.status === "running",
+    activeTab = item.cutout ? tab : "Original",
     picture = tab === "Original" || !item.cutout ? item.original : item.cutout;
   return (
     <>
@@ -114,7 +116,7 @@ export default function Detail({ item, go, refresh, styleItem }: Props) {
         </section>
       ) : (
         <>
-          <p className="intro">
+          <p className="intro" role="status">
             {ready
               ? item.category
               : item.status === "needs_review"
@@ -135,7 +137,7 @@ export default function Detail({ item, go, refresh, styleItem }: Props) {
                 {["Original", "Cutout"].map((v) => (
                   <button
                     key={v}
-                    aria-pressed={v === tab}
+                    aria-pressed={v === activeTab}
                     disabled={v === "Cutout" && !item.cutout}
                     onClick={() => setTab(v)}
                   >
@@ -316,16 +318,35 @@ export default function Detail({ item, go, refresh, styleItem }: Props) {
                 </form>
               ) : (
                 <div>
-                  <h2>Processing draft</h2>
+                  <h2>
+                    {processing ? "Your original is uploaded" : "Photo draft"}
+                  </h2>
                   <p>
-                    {item.error_code === "provider_unconfigured"
-                      ? "Your original is saved. The operator can enable the local model or set PHOTOROOM_API_KEY on the app and worker, then restart them. Choose Retry processing when the service is ready."
-                      : item.error_code
-                        ? "Processing needs attention (" +
-                          item.error_code.replaceAll("_", " ") +
-                          "). Retry or replace your photo."
-                        : "You can leave this screen and return to Needs review."}
+                    {processing
+                      ? "After background removal finishes, you can review the cutout, choose a category, and save to your wardrobe. This page updates automatically."
+                      : item.error_code === "provider_unconfigured"
+                        ? "Your original is saved. Background removal is unavailable right now. Choose Retry processing when the service is back."
+                        : item.error_code
+                          ? "Background removal needs attention. Retry processing or replace the photo."
+                          : "Finish processing the photo before saving it to your wardrobe."}
                   </p>
+                  {processing && (
+                    <div className="actions">
+                      <button className="primary" disabled>
+                        Save to wardrobe
+                      </button>
+                      <button
+                        type="button"
+                        disabled={busy}
+                        onClick={() => void refresh()}
+                      >
+                        Check status
+                      </button>
+                    </div>
+                  )}
+                  {processing && (
+                    <p>You can return to this photo under Needs review.</p>
+                  )}
                   {["draft", "failed"].includes(item.status) && (
                     <button
                       disabled={busy}

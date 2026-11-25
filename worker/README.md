@@ -10,6 +10,8 @@ The web server and worker need the same Supabase project URL, service-role key, 
 - With `BACKGROUND_PROVIDER=local`, run the project's model service on the worker host. The worker posts the PNG body to the fixed loopback endpoint `http://127.0.0.1:7179/remove`. This mode does not use a Photoroom credential.
 - With the default provider and no API key, finalized originals and processing inputs persist. The item records `provider_unconfigured`. After configuring the web server and worker and restarting them, use **Retry** on the item.
 
+The worker suggests a color from visible garment pixels. Set `PHOTO_AUTO_CLASSIFY=1` in the worker environment to also suggest category and type with a pinned CLIP model. The first start downloads the weights to `.model-cache/transformers`. Photos are analyzed on the worker host. The review form remains editable when a suggestion is missing or incorrect. [CLIP model](https://huggingface.co/Xenova/clip-vit-base-patch32)
+
 ## Images and limits
 
 The API fully decodes JPEG, PNG, and WebP, rejects animated or malformed images, normalizes EXIF orientation, applies the selected rotation and crop, and strips metadata from the processing copy. It fits this copy inside 1536 × 1536 pixels. The private original preserves the source for review. The compact thumbnail fits inside 420 × 500 pixels.

@@ -42,7 +42,7 @@ async function putImmutable(bucket, path, bytes, contentType) {
     throw new ProcessingError("storage_unavailable", 20);
 }
 
-export async function runOne(db, provider) {
+export async function runOne(db, provider, suggestGarment) {
   const { data, error } = await db.rpc("photo_claim");
   if (error) throw new Error("queue_unavailable");
   const job = data?.[0];
@@ -55,7 +55,7 @@ export async function runOne(db, provider) {
     const bucket = db.storage.from("wardrobe");
     const current = await db
       .from("items")
-      .select("original_path")
+      .select("original_path,category,subtype,color")
       .eq("owner_id", job.owner_id)
       .eq("id", job.item_id)
       .eq("revision", job.revision)
@@ -89,6 +89,38 @@ export async function runOne(db, provider) {
       .webp({ quality: 85 })
       .toBuffer();
     await putImmutable(bucket, prefix + "thumb.webp", thumb, "image/webp");
+    const existing = current.data;
+    if (suggestGarment && (!existing.category || !existing.color)) {
+      try {
+        const suggestion = await suggestGarment(thumb);
+        const fields = {};
+        if (!existing.category && suggestion.category) {
+          fields.category = suggestion.category;
+          if (!existing.subtype && suggestion.subtype)
+            fields.subtype = suggestion.subtype;
+        }
+        if (!existing.color && suggestion.color)
+          fields.color = suggestion.color;
+        if (Object.keys(fields).length) {
+          let update = db
+            .from("items")
+            .update(fields)
+            .eq("owner_id", job.owner_id)
+            .eq("id", job.item_id)
+            .eq("revision", job.revision)
+            .eq("status", "running")
+            .is("deleted_at", null);
+          for (const field of Object.keys(fields))
+            update = update.eq(field, "");
+          const result = await update;
+          if (result.error) throw result.error;
+        }
+      } catch {
+        console.warn(
+          "Could not save garment suggestions. The photo remains available for manual review.",
+        );
+      }
+    }
   } catch (e) {
     code = e instanceof ProcessingError ? e.message : "processing_failed";
     if (e instanceof ProcessingError && e.delay !== null)

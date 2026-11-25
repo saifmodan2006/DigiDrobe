@@ -144,7 +144,13 @@ test(`upload three garments, recover a pending job, compare two looks and reopen
           .in("state", ["queued", "running", "retry_wait"]);
         expect(queue.error).toBeNull();
         expect(queue.data?.map((job) => job.owner_id)).toEqual([account.id]);
-        expect(await runOne(localAdmin, mockedRemoval)).toBe(true);
+        expect(
+          await runOne(localAdmin, mockedRemoval, async () => ({
+            category: i === 2 ? "Bottoms" : "Tops",
+            subtype: i === 2 ? "Trousers" : "Shirts",
+            color: i === 2 ? "Gray" : "Green",
+          })),
+        ).toBe(true);
       }
       if (session) {
         const reopened = await browser.newContext({
@@ -158,9 +164,18 @@ test(`upload three garments, recover a pending job, compare two looks and reopen
       await expect(
         active.getByRole("button", { name: "Cutout", exact: true }),
       ).toBeEnabled({ timeout: 60_000 });
-      await active
-        .getByRole("combobox", { name: /^Category/ })
-        .selectOption(i === 2 ? "Bottoms" : "Tops");
+      const category = active.getByRole("combobox", { name: /^Category/ });
+      if (photoDirectory) {
+        await category.selectOption(i === 2 ? "Bottoms" : "Tops");
+      } else {
+        await expect(category).toHaveValue(i === 2 ? "Bottoms" : "Tops");
+        await expect(
+          active.getByRole("combobox", { name: /^Type/ }),
+        ).toHaveValue(i === 2 ? "Trousers" : "Shirts");
+        await expect(
+          active.getByRole("textbox", { name: "Color", exact: true }),
+        ).toHaveValue(i === 2 ? "Gray" : "Green");
+      }
       await active.getByRole("button", { name: "Save to wardrobe" }).click();
       await expect(active.getByText("Saved to your wardrobe.")).toBeVisible();
     }

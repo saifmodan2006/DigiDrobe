@@ -2,6 +2,7 @@ import { setTimeout as pause } from "node:timers/promises";
 import { createClient } from "@supabase/supabase-js";
 import { configuredProvider, ProcessingError } from "./provider.mjs";
 import { cleanOrphans, runOne } from "./queue.mjs";
+import { suggestGarment, warmVision } from "./garment-metadata.mjs";
 
 const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
 const service = process.env.SUPABASE_SERVICE_ROLE_KEY;
@@ -13,6 +14,13 @@ const db = createClient(url, service, {
   auth: { persistSession: false, autoRefreshToken: false },
 });
 const provider = configuredProvider();
+if (process.env.PHOTO_AUTO_CLASSIFY === "1") {
+  void warmVision()?.catch(() =>
+    console.warn(
+      "Photo category model is unavailable. Manual selection remains available.",
+    ),
+  );
+}
 let running = true,
   nextCleanup = 0;
 process.once("SIGINT", () => {
@@ -39,6 +47,7 @@ while (running) {
             throw new ProcessingError("provider_unconfigured");
           },
         },
+        suggestGarment,
       ))
     )
       await pause(1500);

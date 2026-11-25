@@ -16,8 +16,8 @@ export default function Detail({ item, go, refresh, styleItem }: Props) {
     [note, announce] = useState(""),
     [busy, wait] = useState(false),
     [saved, confirm] = useState(false),
-    [category, group] = useState(item.category || ""),
-    [subtype, type] = useState(item.subtype || ""),
+    [categoryOverride, group] = useState<string>(),
+    [subtypeOverride, type] = useState<string>(),
     [permanent, ask] = useState(false);
   const [collections, list] = useState<{ id: string; name: string }[]>([]),
     [members, include] = useState<string[]>([]);
@@ -58,6 +58,8 @@ export default function Detail({ item, go, refresh, styleItem }: Props) {
   const invoke = (action: string) =>
     photo({ action, itemId: item.id, revision: item.revision });
   const ready = item.status === "ready",
+    category = categoryOverride ?? item.category ?? "",
+    subtype = subtypeOverride ?? item.subtype ?? "",
     editable = ready || item.status === "needs_review",
     processing = item.status === "queued" || item.status === "running",
     activeTab = item.cutout ? tab : "Original",
@@ -224,6 +226,13 @@ export default function Detail({ item, go, refresh, styleItem }: Props) {
                     }, "Saved to your wardrobe.");
                   }}
                 >
+                  {!ready && (
+                    <p>
+                      {item.category
+                        ? "Check the suggested details, then save your item."
+                        : "Choose a category, then save your item."}
+                    </p>
+                  )}
                   <label>
                     Item name
                     <input
@@ -264,6 +273,14 @@ export default function Detail({ item, go, refresh, styleItem }: Props) {
                     </label>
                   </div>
                   <label>
+                    Color
+                    <input
+                      name="color"
+                      maxLength={100}
+                      defaultValue={item.color || ""}
+                    />
+                  </label>
+                  <label>
                     Availability
                     <select
                       name="availability"
@@ -279,7 +296,6 @@ export default function Detail({ item, go, refresh, styleItem }: Props) {
                     <div className="fields">
                       {(
                         [
-                          "color",
                           "pattern",
                           "brand",
                           "material",

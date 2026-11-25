@@ -38,14 +38,43 @@ export default function Studio() {
     [loading, load] = useState(!!db),
     [recovery, reset] = useState(false);
   useEffect(() => {
-    if (!db) return;
+    const auth = db?.auth;
+    if (!auth) return;
+    let check = 0;
+    let lastToken: string | null = null;
     reset(new URLSearchParams(location.search).has("recovery"));
-    const { data } = db.auth.onAuthStateChange((event, s) => {
+    const { data } = auth.onAuthStateChange((event, s) => {
       if (event === "PASSWORD_RECOVERY") reset(true);
-      set(s);
-      load(false);
+      if (!s) {
+        check++;
+        lastToken = null;
+        set(null);
+        load(false);
+        return;
+      }
+      if (s.access_token === lastToken) return;
+      lastToken = s.access_token;
+      const current = ++check;
+      // A session restored from browser storage needs server verification.
+      void auth.getUser(s.access_token).then(
+        ({ data: identity, error }) => {
+          if (current !== check) return;
+          set(!error && identity.user ? { ...s, user: identity.user } : null);
+          if (error) lastToken = null;
+          load(false);
+        },
+        () => {
+          if (current !== check) return;
+          set(null);
+          lastToken = null;
+          load(false);
+        },
+      );
     });
-    return () => data.subscription.unsubscribe();
+    return () => {
+      check++;
+      data.subscription.unsubscribe();
+    };
   }, []);
   if (loading)
     return (

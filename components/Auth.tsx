@@ -4,6 +4,7 @@ import { Eye, EyeOff, LockKeyhole } from "lucide-react";
 import { brand } from "../lib/config";
 import { db, message } from "../lib/client";
 import Logo from "./Logo";
+const minimumPasswordLength = 6;
 export default function Auth({
   recovery = false,
   onReset,
@@ -127,11 +128,11 @@ export default function Auth({
             <h1>{heading}</h1>
             <p>
               {recovery
-                ? "Use at least eight characters."
+                ? "Use at least six characters."
                 : mode === "login"
                   ? "Sign in to your personal wardrobe."
                   : mode === "signup"
-                    ? "Keep your pieces and plan looks in one private space."
+                    ? "Create a private account with a password of at least six characters."
                     : "We’ll email you a recovery link."}
             </p>
             <form onSubmit={submit} style={{ marginTop: "1.5rem" }}>
@@ -161,7 +162,11 @@ export default function Auth({
                           ? "current-password"
                           : "new-password"
                       }
-                      minLength={mode === "login" && !recovery ? 1 : 8}
+                      minLength={
+                        mode === "login" && !recovery
+                          ? 1
+                          : minimumPasswordLength
+                      }
                       required
                     />
                     <button

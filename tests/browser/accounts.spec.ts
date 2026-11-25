@@ -11,11 +11,17 @@ test("a new account signs up, sees an empty wardrobe, and can sign in again", as
   );
   const account = {
     email: `drape-${randomUUID()}@example.test`,
-    password: randomUUID(),
+    password: randomUUID().slice(0, 6),
   };
   let id: string | undefined;
   try {
-    await page.goto("/");
+    await page.goto("/#Account");
+    await expect(
+      page.getByRole("heading", { name: "Welcome back." }),
+    ).toBeVisible();
+    await expect(
+      page.getByRole("navigation", { name: "Main navigation" }),
+    ).toHaveCount(0);
     let signupRequests = 0;
     page.on("request", (request) => {
       if (new URL(request.url()).pathname.endsWith("/auth/v1/signup")) {
@@ -29,6 +35,11 @@ test("a new account signs up, sees an empty wardrobe, and can sign in again", as
       "Create an account",
     );
     expect(signupRequests).toBe(0);
+    await page.reload();
+    await expect(
+      page.getByRole("heading", { name: "Welcome back." }),
+    ).toBeVisible();
+    await page.goto("/");
     await page
       .getByRole("button", { name: "Create an account", exact: true })
       .click();

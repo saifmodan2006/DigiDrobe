@@ -1,4 +1,4 @@
-# DrapeDeck — Digital Wardrobe & Outfit Planner
+# DigiDrobe — Digital Wardrobe
 
 Your wardrobe. New possibilities.
 
@@ -71,5 +71,7 @@ npm run e2e
 Browser tests use installed Chrome on Windows or Playwright Chromium elsewhere. Install the latter with `npx playwright install chromium` when required. The account, persistence and cross-account tests require a local Supabase stack and `.env.local`. Test accounts are temporary. Isolated provider tests deliberately inject test responses. See the [worker tests and operational notes](worker/README.md) for the dedicated idle-stack integration run. Browser camera controls can be exercised through automation; physical capture requires a device check.
 
 ## Branding
+
+The interface uses Bodoni Moda for headlines, Instrument Serif Italic for emphasis, and Satoshi for UI text. Satoshi loads from the official Fontshare CDN, with system fallbacks. The photographed fabric letters are decorative WebP assets and sit alongside selectable text. [Satoshi](https://www.fontshare.com/fonts/satoshi)
 
 Edit `lib/brand.json` to change the name, tagline, descriptor, repository owner or slug. The header, authentication, page titles and metadata consume this configuration. Run `npm run brand` to update the package, lockfile and README heading. Changing the actual GitHub repository name or Git remote requires a separate repository administration action.

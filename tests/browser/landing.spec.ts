@@ -31,7 +31,7 @@ test("visitors can explore the homepage and choose either account form", async (
   await expect(
     page.getByRole("heading", { name: "Welcome back." }),
   ).toBeVisible();
-  await page.getByRole("link", { name: "DrapeDeck home" }).click();
+  await page.getByRole("link", { name: "DigiDrobe home" }).click();
   await expect(page.getByRole("heading", { level: 1 })).toContainText(
     "Your wardrobe.",
   );

@@ -1,13 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import {
-  ArrowDown,
-  ArrowUpRight,
-  Camera,
-  Layers,
-  LockKeyhole,
-  Shirt,
-} from "lucide-react";
+import { ArrowDown, ArrowUpRight, LockKeyhole } from "lucide-react";
 import { brand } from "../lib/config";
 import Logo from "./Logo";
 import LegacyAuthCallback from "./LegacyAuthCallback";
@@ -15,19 +8,16 @@ import "./landing.css";
 
 const steps = [
   {
-    icon: Camera,
     title: "Photograph a piece",
     description:
       "Upload a photo or use your camera. Crop it, remove the background, and review the cutout.",
   },
   {
-    icon: Shirt,
     title: "Organize your wardrobe",
     description:
       "Sort pieces by category, save favorites, and build collections for work, weekends, or travel.",
   },
   {
-    icon: Layers,
     title: "Put looks together",
     description:
       "Build an outfit from your own clothes, compare combinations, and save the ones you want to wear.",
@@ -47,7 +37,7 @@ export default function Landing() {
           <Link href="/" aria-label={brand.name + " home"}>
             <Logo />
           </Link>
-          <nav aria-label="Explore DrapeDeck">
+          <nav aria-label={`Explore ${brand.name}`}>
             <a href="#wardrobe">The wardrobe</a>
             <a href="#how-it-works">How it works</a>
           </nav>
@@ -73,7 +63,16 @@ export default function Landing() {
               {taglineRest.length > 0 && (
                 <>
                   <br />
-                  <em>{taglineRest.join(" ")}</em>
+                  <span className="landing-title-highlight">
+                    <em>{taglineRest.join(" ")}</em>
+                    <Image
+                      src="/fabric-d-mark.webp"
+                      alt=""
+                      width={76}
+                      height={76}
+                      unoptimized
+                    />
+                  </span>
                 </>
               )}
             </h1>
@@ -111,9 +110,8 @@ export default function Landing() {
             <p className="landing-kicker">How it works</p>
             <h2 id="workflow-title">From camera roll to outfit.</h2>
             <ol className="landing-steps">
-              {steps.map(({ icon: Icon, title, description }) => (
+              {steps.map(({ title, description }) => (
                 <li key={title}>
-                  <Icon aria-hidden="true" size={25} />
                   <h3>{title}</h3>
                   <p>{description}</p>
                 </li>

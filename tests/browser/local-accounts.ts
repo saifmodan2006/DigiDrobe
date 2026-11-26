@@ -47,7 +47,12 @@ export async function signIn(
 
 export async function signOut(page: Page) {
   await page.getByRole("button", { name: "Account settings" }).click();
-  await page.getByRole("button", { name: "Sign out" }).click();
+  await Promise.all([
+    page.waitForURL((url) => url.pathname === "/account" && !url.hash, {
+      waitUntil: "load",
+    }),
+    page.getByRole("button", { name: "Sign out" }).click(),
+  ]);
   await expect(
     page.getByRole("heading", { name: "Welcome back." }),
   ).toBeVisible();

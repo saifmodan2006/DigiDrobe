@@ -91,7 +91,7 @@ export default function Auth({
         e.code === "invalid_credentials"
       ) {
         setError(
-          "The email or password is incorrect. If you’re new to DrapeDeck, choose Create an account below.",
+          `The email or password is incorrect. If you’re new to ${brand.name}, choose Create an account below.`,
         );
       } else {
         setError(message(e));

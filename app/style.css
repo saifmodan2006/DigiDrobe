@@ -1,30 +1,36 @@
+@font-face {
+  font-family: "Satoshi";
+  src: url("https://cdn.fontshare.com/wf/NWBQYJIM7GCZ5XWD7D26ARB3VDY55ZRT/K63EV2KZIGKLE7RANQ2U42S6SVHU5RJ7/X6XYTKIVDUW7GZTZPZNN4EUM5KH54KHF.woff2")
+    format("woff2");
+  font-weight: 300 900;
+  font-style: normal;
+  font-display: swap;
+}
 * {
   box-sizing: border-box;
 }
 :root {
   color-scheme: light dark;
-  --bg: light-dark(#f7f5ef, #191c17);
-  --surface: light-dark(#fffdf8, #22261f);
-  --raised: light-dark(#fff, #2b3026);
-  --stage: light-dark(#f0f0ed, #30332f);
-  --text: light-dark(#24251f, #f0f1e8);
-  --muted: light-dark(#66685c, #b7bdae);
-  --line: light-dark(#d9d9cd, #424b3c);
-  --control: light-dark(#878b7c, #77836c);
-  --primary: light-dark(#3e4a34, #becfa3);
-  --on: light-dark(#fffdf8, #1c2416);
-  --soft: light-dark(#e7ebdd, #34412a);
-  --accent: light-dark(#a04d2d, #e9b294);
-  --focus: light-dark(#687755, #b6c79a);
+  --bg: light-dark(#f6f2eb, #201e1b);
+  --surface: light-dark(#fffcf6, #292520);
+  --raised: light-dark(#fff, #342e28);
+  --stage: light-dark(#ede7df, #38312b);
+  --text: light-dark(#25221f, #f6eee3);
+  --muted: light-dark(#655c54, #cabdaf);
+  --line: light-dark(#d7cdbf, #554a3f);
+  --control: light-dark(#8b7d70, #a09282);
+  --primary: light-dark(#49372e, #dfc7af);
+  --on: light-dark(#fffdf8, #271d17);
+  --soft: light-dark(#eee3d5, #43372d);
+  --accent: light-dark(#824c3f, #efb29a);
+  --focus: light-dark(#6e5138, #ead1a4);
   --error: light-dark(#a33329, #ffb4a6);
-  --serif: "Instrument Serif", Georgia, "Times New Roman", serif;
-  font-family:
-    "Geist Variable",
-    -apple-system,
-    BlinkMacSystemFont,
-    "Segoe UI",
-    sans-serif;
-  line-height: 1.55;
+  --serif: "Bodoni Moda Variable", "Bodoni MT", Georgia, serif;
+  --editorial-italic: "Instrument Serif", Georgia, serif;
+  --sans: "Satoshi", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --edge: 3px;
+  font-family: var(--sans);
+  line-height: 1.58;
   color: var(--text);
   background: var(--bg);
 }
@@ -48,17 +54,18 @@ h1,
 h2,
 h3 {
   font-family: var(--serif);
-  font-weight: 400;
-  line-height: 1.15;
+  font-weight: 500;
+  font-variation-settings: "opsz" 24;
+  line-height: 1.1;
   overflow-wrap: anywhere;
 }
 h1 {
-  font-size: clamp(2rem, 4vw, 2.75rem);
-  letter-spacing: -0.045em;
+  font-size: clamp(2.25rem, 4.5vw, 3.35rem);
+  letter-spacing: -0.036em;
 }
 h2 {
   font-size: 1.7rem;
-  letter-spacing: -0.035em;
+  letter-spacing: -0.025em;
 }
 h3 {
   font-size: 1.3rem;
@@ -84,7 +91,7 @@ button {
   gap: 0.5rem;
   background: var(--surface);
   border: 1px solid var(--control);
-  border-radius: 0.7rem;
+  border-radius: var(--edge);
   padding: 0.55rem 0.95rem;
   min-height: 44px;
   cursor: pointer;
@@ -131,7 +138,7 @@ textarea {
   width: 100%;
   min-height: 48px;
   border: 1px solid var(--control);
-  border-radius: 0.65rem;
+  border-radius: var(--edge);
   background: var(--surface);
   padding: 0.7rem 0.85rem;
   font-size: 1rem;
@@ -144,7 +151,7 @@ input::placeholder {
 fieldset {
   min-width: 0;
   border: 1px solid var(--line);
-  border-radius: 0.75rem;
+  border-radius: var(--edge);
   padding: 1rem;
   display: grid;
   gap: 0.8rem;
@@ -169,18 +176,19 @@ button.text-button {
   text-underline-offset: 4px;
 }
 .logo {
-  font:
-    650 1.62rem/1 "Geist Variable",
-    system-ui,
-    sans-serif;
-  letter-spacing: -0.065em;
+  font: 550 1.75rem/1 var(--serif);
+  font-variation-settings: "opsz" 14;
+  letter-spacing: -0.055em;
   display: inline-flex;
   align-items: center;
-  gap: 0.6rem;
+  gap: 0.48rem;
 }
 .logo img {
-  width: 1.8rem;
-  height: 1.8rem;
+  width: 2.1rem;
+  height: 2.1rem;
+  object-fit: contain;
+  background: light-dark(transparent, #eadecd);
+  border-radius: var(--edge);
   flex: none;
 }
 .auth-home {
@@ -211,7 +219,7 @@ button.text-button {
   grid-template-columns: 1.05fr 1fr;
   min-height: min(780px, calc(100svh - 7.5rem));
   border: 1px solid var(--line);
-  border-radius: 1.35rem;
+  border-radius: var(--edge);
   overflow: hidden;
   background: var(--surface);
 }
@@ -243,7 +251,7 @@ button.text-button {
   bottom: 7%;
   right: 6%;
   color: #fffdf8;
-  font: 400 clamp(2.7rem, 5.2vw, 5rem)/0.98 var(--serif);
+  font: italic 400 clamp(2.7rem, 5.2vw, 5rem)/1 var(--editorial-italic);
   letter-spacing: -0.055em;
   text-wrap: balance;
 }
@@ -266,7 +274,7 @@ button.text-button {
   padding: 0.25rem;
   gap: 0.25rem;
   background: var(--stage);
-  border-radius: 0.8rem;
+  border-radius: var(--edge);
   margin: 1.5rem 0;
 }
 .switcher button {
@@ -302,7 +310,7 @@ button.text-button {
   background: var(--soft);
   color: var(--text);
   padding: 0.85rem 1rem;
-  border-radius: 0.6rem;
+  border-radius: var(--edge);
   margin: 1rem 0;
 }
 .notice p {
@@ -404,7 +412,7 @@ button.text-button {
   display: flex;
   align-items: center;
   border: 1px solid var(--control);
-  border-radius: 0.7rem;
+  border-radius: var(--edge);
   padding-left: 0.85rem;
   background: var(--surface);
   width: min(100%, 24rem);
@@ -419,7 +427,7 @@ button.text-button {
 }
 .chips button,
 .mobile-views button {
-  border-radius: 2rem;
+  border-radius: var(--edge);
   font-size: 0.9rem;
 }
 .chips button[aria-pressed="true"] {
@@ -437,7 +445,7 @@ button.text-button {
 }
 .garment-link {
   border: 1px solid var(--line);
-  border-radius: 1rem;
+  border-radius: var(--edge);
   background: var(--surface);
   display: grid;
   gap: 0;
@@ -488,10 +496,34 @@ button.text-button {
 .empty {
   padding: 4rem 1rem;
   border: 1px dashed var(--control);
-  border-radius: 1rem;
+  border-radius: var(--edge);
   text-align: center;
   margin-top: 1.5rem;
   background: var(--surface);
+}
+.empty-fabric {
+  display: block;
+  width: 4rem;
+  height: 4rem;
+  margin: 0 auto 0.75rem;
+  object-fit: contain;
+}
+.collection-banner {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: clamp(0.75rem, 3vw, 2rem);
+  padding: clamp(1rem, 4vw, 2.5rem);
+  border-block: 1px solid var(--line);
+  background: var(--soft);
+}
+.collection-banner img {
+  width: clamp(3rem, 13vw, 9rem);
+  height: auto;
+  object-fit: contain;
+}
+.collection-banner h1 {
+  font-size: clamp(1.8rem, 4.5vw, 3.35rem);
 }
 .empty svg {
   color: var(--primary);
@@ -506,7 +538,7 @@ button.text-button {
   align-content: start;
   gap: 1rem;
   border: 1px solid var(--line);
-  border-radius: 1rem;
+  border-radius: var(--edge);
   background: var(--surface);
   padding: clamp(1rem, 3vw, 2rem);
   max-width: 46rem;
@@ -544,7 +576,7 @@ button.text-button {
   background-color: var(--stage);
   background-image: repeating-conic-gradient(#8882 0 25%, transparent 0 50%);
   background-size: 20px 20px;
-  border-radius: 0.85rem;
+  border-radius: var(--edge);
 }
 .review-stage img {
   object-fit: contain;
@@ -557,7 +589,7 @@ button.text-button {
 .preview {
   min-height: 160px;
   border: 1px dashed var(--control);
-  border-radius: 0.85rem;
+  border-radius: var(--edge);
   align-content: center;
   gap: 0.6rem;
 }

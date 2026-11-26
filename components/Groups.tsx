@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import Image from "next/image";
 import { FolderOpen } from "lucide-react";
 import { db, checked, message } from "../lib/client";
 export default function Groups({
@@ -33,10 +34,21 @@ export default function Groups({
   }, [userId]);
   return (
     <>
-      <h1>Collections</h1>
-      <p className="intro">
-        Group your pieces for occasions, seasons and trips.
-      </p>
+      <header className="collection-banner">
+        <div>
+          <h1>Collections</h1>
+          <p className="intro">
+            Group your pieces for occasions, seasons and trips.
+          </p>
+        </div>
+        <Image
+          src="/fabric-c-collection.webp"
+          alt=""
+          width={320}
+          height={320}
+          unoptimized
+        />
+      </header>
       <form
         className="inline-form"
         onSubmit={async (e) => {

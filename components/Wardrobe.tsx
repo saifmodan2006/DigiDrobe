@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import Image from "next/image";
 import { Heart, Search, Shirt, SlidersHorizontal } from "lucide-react";
 import type { Item } from "../lib/model";
 import { categories, availability } from "../lib/config";
@@ -211,7 +212,16 @@ export default function Wardrobe({
         </div>
       ) : (
         <div className="empty">
-          <Shirt size={40} />
+          {page === "Wardrobe" && !visible.length && (
+            <Image
+              className="empty-fabric"
+              src="/fabric-d-mark.webp"
+              alt=""
+              width={76}
+              height={76}
+              unoptimized
+            />
+          )}
           <h2>
             {visible.length
               ? "No matching pieces"

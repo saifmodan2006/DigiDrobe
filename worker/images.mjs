@@ -7,8 +7,8 @@ export function limit(name, fallback) {
   return n;
 }
 
-export function transformFor(rotation = 0, crop = null) {
-  if (![0, 90, 180, 270].includes(rotation))
+export function transformFor(rotation = 0, crop = null, clothesOnly = false) {
+  if (![0, 90, 180, 270].includes(rotation) || typeof clothesOnly !== "boolean")
     throw new Error("invalid_transform");
   if (crop !== null) {
     const { x, y, width, height } = crop;
@@ -24,7 +24,7 @@ export function transformFor(rotation = 0, crop = null) {
       throw new Error("invalid_transform");
     crop = { x, y, width, height };
   }
-  return { rotation, crop };
+  return { rotation, crop, clothesOnly };
 }
 
 export async function prepareInput(bytes, transform) {
@@ -120,4 +120,29 @@ export async function validateCutout(bytes, sourceDimensions) {
   }
   if (!transparent || !visible) throw new Error("invalid_cutout");
   return sharp(bytes, options).png().toBuffer();
+}
+
+export async function cropCutout(bytes) {
+  const { data, info: { width, height } } = await sharp(bytes)
+    .extractChannel("alpha")
+    .raw()
+    .toBuffer({ resolveWithObject: true });
+  let left = width, top = height, right = -1, bottom = -1;
+  for (let y = 0; y < height; y++) {
+    for (let x = 0; x < width; x++) {
+      if (data[y * width + x] < 32) continue;
+      left = Math.min(left, x);
+      right = Math.max(right, x);
+      top = Math.min(top, y);
+      bottom = Math.max(bottom, y);
+    }
+  }
+  if (right < 0) throw new Error("invalid_cutout");
+  const padding = Math.max(2, Math.round(Math.max(right - left, bottom - top) * 0.02));
+  // Keep a transparent border even when clothing touches the edge of the source photo.
+  return sharp(bytes)
+    .extract({ left, top, width: right - left + 1, height: bottom - top + 1 })
+    .extend({ left: padding, right: padding, top: padding, bottom: padding, background: "#0000" })
+    .png()
+    .toBuffer();
 }

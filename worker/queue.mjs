@@ -1,6 +1,6 @@
 import sharp from "sharp";
 import { ProcessingError } from "./provider.mjs";
-import { validateCutout } from "./images.mjs";
+import { cropCutout, validateCutout } from "./images.mjs";
 
 const id = /^[\da-f]{8}(?:-[\da-f]{4}){3}-[\da-f]{12}$/i;
 export function photoPrefix(owner, item, revision) {
@@ -42,7 +42,7 @@ async function putImmutable(bucket, path, bytes, contentType) {
     throw new ProcessingError("storage_unavailable", 20);
 }
 
-export async function runOne(db, provider, suggestGarment) {
+export async function runOne(db, provider, suggestGarment, isolateClothing) {
   const { data, error } = await db.rpc("photo_claim");
   if (error) throw new Error("queue_unavailable");
   const job = data?.[0];
@@ -71,9 +71,33 @@ export async function runOne(db, provider, suggestGarment) {
       const input = await getStored(bucket, prefix + "input.png");
       if (!input) throw new ProcessingError("missing_input");
       const { width, height } = await sharp(input).metadata();
-      const output = await provider.remove(input, { width, height });
-      cutout = output.bytes;
-      reference = output.reference;
+      const source = await db
+        .from("photo_requests")
+        .select("transform")
+        .eq("owner_id", job.owner_id)
+        .eq("item_id", job.item_id)
+        .eq("revision", job.revision)
+        .single();
+      if (source.error) throw new ProcessingError("database_unavailable", 15);
+      const required = source.data.transform?.clothesOnly === true;
+      if (required && !isolateClothing)
+        throw new ProcessingError("clothing_analysis_unavailable");
+      let garment;
+      try {
+        garment = await isolateClothing?.(input, { width, height }, required);
+      } catch (error) {
+        // An unavailable model must not turn an explicit garment-only request into a person cutout.
+        if (required || error.message !== "clothing_analysis_unavailable") throw error;
+      }
+      if (garment) {
+        cutout = await validateCutout(garment);
+      } else {
+        if (required) throw new ProcessingError("clothing_not_found");
+        const output = await provider.remove(input, { width, height });
+        cutout = output.bytes;
+        reference = output.reference;
+      }
+      cutout = await cropCutout(cutout);
       await putImmutable(bucket, prefix + "cutout.png", cutout, "image/png");
     } else {
       cutout = await validateCutout(cutout);

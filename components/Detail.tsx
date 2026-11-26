@@ -340,6 +340,10 @@ export default function Detail({ item, go, refresh, styleItem }: Props) {
                   <p>
                     {processing
                       ? "After background removal finishes, you can review the cutout, choose a category, and save to your wardrobe. This page updates automatically."
+                      : item.error_code === "clothing_not_found"
+                        ? "We couldn’t isolate enough clothing to make a cutout. Try a sharper photo with the garments clearly visible."
+                      : item.error_code === "clothing_analysis_unavailable"
+                        ? "Clothing isolation is temporarily unavailable. Your original is saved. Try processing again shortly."
                       : item.error_code === "provider_unconfigured"
                         ? "Your original is saved. Background removal is unavailable right now. Choose Retry processing when the service is back."
                         : item.error_code

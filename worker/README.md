@@ -14,6 +14,8 @@ The worker suggests a color from visible garment pixels. Set `PHOTO_AUTO_CLASSIF
 
 ## Images and limits
 
+The worker runs clothing segmentation on its host using a pinned, checksum-verified SCHP model. On first use it downloads roughly 69 MB to `.model-cache`. Photos that appear to show a person are processed for visible clothing. Selecting **Someone is wearing the clothes** requires the clothing mask and keeps the upload in review if extraction fails. Cutouts are cropped around visible pixels with a transparent border. Inspect the result before saving, especially around cuffs, collars and overlapping garments. [SCHP model](https://huggingface.co/pirocheto/schp-atr-18)
+
 The API fully decodes JPEG, PNG, and WebP, rejects animated or malformed images, normalizes EXIF orientation, applies the selected rotation and crop, and strips metadata from the processing copy. It fits this copy inside 1536 × 1536 pixels. The private original preserves the source for review. The compact thumbnail fits inside 420 × 500 pixels.
 
 Defaults are 10 MiB per upload, 24 million decoded pixels, 50 source revisions per rolling 24 hours and 500 wardrobe records per account, including Trash. Adjust `MAX_UPLOAD_BYTES`, `MAX_IMAGE_PIXELS`, `MAX_PHOTOS_PER_DAY`, and `MAX_ITEMS_PER_ACCOUNT` as required. Set the browser limit `NEXT_PUBLIC_MAX_UPLOAD_BYTES` to match the server. Raising the file size limit above 10 MiB also requires updating the private bucket limit in a new migration and checking the project's global storage limit.

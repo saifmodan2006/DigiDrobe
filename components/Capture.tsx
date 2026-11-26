@@ -18,6 +18,7 @@ export default function Capture({
     [crop, trim] = useState(100),
     [x, moveX] = useState(50),
     [y, moveY] = useState(50),
+    [clothesOnly, setClothesOnly] = useState(false),
     [error, tell] = useState(""),
     [busy, status] = useState(""),
     [camera, preview] = useState(false),
@@ -104,6 +105,7 @@ export default function Capture({
     trim(100);
     moveX(50);
     moveY(50);
+    setClothesOnly(false);
   }
   async function openCamera() {
     tell("");
@@ -147,6 +149,7 @@ export default function Capture({
           file.name.replace(/\.[^.]+$/, "").slice(0, 100) ||
           "New item",
         rotation,
+        clothesOnly,
         crop: { x: left, y: top, width: fraction, height: fraction },
       });
       draftId.current = draft.itemId;
@@ -329,8 +332,21 @@ export default function Capture({
                 </label>
               </>
             )}
+            <label className="worn-photo-option">
+              <input
+                type="checkbox"
+                checked={clothesOnly}
+                onChange={(e) => setClothesOnly(e.target.checked)}
+                aria-describedby="clothes-only-help"
+              />
+              Someone is wearing the clothes
+            </label>
+            <p id="clothes-only-help">
+              Select this to keep only the visible garments and remove the
+              person along with the background.
+            </p>
             <button className="primary" onClick={submit}>
-              Remove background
+              {clothesOnly ? "Extract clothes" : "Remove background"}
             </button>
           </fieldset>
         )}

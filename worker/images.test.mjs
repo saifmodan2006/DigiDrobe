@@ -1,8 +1,9 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import sharp from "sharp";
-import { prepareInput, transformFor, validateCutout } from "./images.mjs";
+import { cropCutout, prepareInput, transformFor, validateCutout } from "./images.mjs";
 import { PhotoroomProvider } from "./provider.mjs";
+import { garmentMask } from "./clothing.mjs";
 
 const original = await sharp({
   create: { width: 60, height: 20, channels: 3, background: "#843" },
@@ -41,6 +42,36 @@ test("rejects a flat alpha layer or completely transparent cutout", async () => 
         .toBuffer(),
     ),
   );
+});
+test("clothing mask keeps confident garments and removes skin and hair", () => {
+  const size = 512;
+  const pixels = size ** 2;
+  const scores = new Float32Array(18 * pixels);
+  for (let y = 50; y < 300; y++) {
+    for (let x = 50; x < 300; x++) {
+      const i = y * size + x;
+      const label = y < 80 ? 2 : y < 110 ? 11 : x < 90 ? 14 : 4;
+      scores[label * pixels + i] = 4;
+    }
+  }
+  const { mask, person, enoughClothing } = garmentMask(scores);
+  assert.equal(person, true);
+  assert.equal(enoughClothing, true);
+  assert.equal(mask[60 * size + 150], 0);
+  assert.equal(mask[90 * size + 150], 0);
+  assert.equal(mask[180 * size + 70], 0);
+  assert.equal(mask[180 * size + 90], 0);
+  assert.equal(mask[180 * size + 150], 255);
+});
+
+test("cutout crop follows the visible bounds and adds transparent padding", async () => {
+  const surrounded = await sharp(original)
+    .extend({ left: 30, right: 9, top: 22, bottom: 77, background: "#0000" })
+    .png()
+    .toBuffer();
+  const cropped = await cropCutout(surrounded);
+  const { width, height } = await sharp(await validateCutout(cropped)).metadata();
+  assert.deepEqual([width, height], [64, 24]);
 });
 test("mocked Photoroom handles valid transparent output, content-type, and retry timing", async () => {
   const dimensions = { width: 64, height: 24 };

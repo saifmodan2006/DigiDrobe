@@ -65,7 +65,7 @@ export async function POST(request: Request) {
     if (b.action === "begin") {
       if (!uuid.test(b.requestId) || (b.itemId && !uuid.test(b.itemId)))
         return problem("Invalid upload request.");
-      const transform = transformFor(b.rotation, b.crop);
+      const transform = transformFor(b.rotation, b.crop, b.clothesOnly);
       const draft = await db.rpc("photo_begin", {
         p_owner: owner,
         p_request: b.requestId,

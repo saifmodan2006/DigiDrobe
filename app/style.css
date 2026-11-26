@@ -156,6 +156,18 @@ fieldset {
   display: grid;
   gap: 0.8rem;
 }
+.worn-photo-option {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  min-height: 44px;
+  cursor: pointer;
+}
+#clothes-only-help {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.875rem;
+}
 form {
   display: grid;
   gap: 1rem;

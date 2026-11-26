@@ -63,6 +63,8 @@ Defaults are 10 MiB per original, 24 megapixels per decoded image, 500 items per
 
 ## Verification
 
+The Vercel production deployment runs a read-only Supabase database check three times a day using the schedules in `vercel.json`. Set a secret named `CRON_SECRET` in the Vercel production environment before deploying those schedules on another Vercel project.
+
 ```sh
 npm run typecheck
 npm test

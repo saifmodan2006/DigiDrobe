@@ -6,6 +6,8 @@ import { brand } from "../lib/config";
 import { db, message } from "../lib/client";
 import Logo from "./Logo";
 const minimumPasswordLength = 6;
+const confirmationNotice =
+  "If this is a new account, check your inbox for a confirmation link.";
 export default function Auth({
   recovery = false,
   initialMode = "login",
@@ -63,9 +65,7 @@ export default function Auth({
         });
         if (result.error) throw result.error;
         if (!result.data.session) {
-          tell(
-            "Check your inbox and follow the confirmation link to activate your account.",
-          );
+          tell(confirmationNotice);
         }
         return;
       }
@@ -83,13 +83,18 @@ export default function Auth({
         tell("Check your email for a link to continue.");
       }
     } catch (e) {
+      const code = e instanceof Error && "code" in e ? e.code : undefined;
       if (
-        mode === "login" &&
         !recovery &&
-        e instanceof Error &&
-        "code" in e &&
-        e.code === "invalid_credentials"
+        mode === "signup" &&
+        (code === "user_already_exists" || code === "email_exists")
       ) {
+        tell(confirmationNotice);
+      } else if (!recovery && mode === "login" && code === "email_not_confirmed") {
+        setError(
+          "Confirm your email before signing in. If the link has expired, choose Create an account below to request a fresh one.",
+        );
+      } else if (!recovery && mode === "login" && code === "invalid_credentials") {
         setError(
           `The email or password is incorrect. If you’re new to ${brand.name}, choose Create an account below.`,
         );
@@ -215,6 +220,7 @@ export default function Auth({
                 {error}
               </p>
             )}
+            <p role="status">{notice}</p>
             {!recovery && (
               <p>
                 {mode === "login"
@@ -228,11 +234,14 @@ export default function Auth({
                   disabled={busy}
                   onClick={() => change(mode === "login" ? "signup" : "login")}
                 >
-                  {mode === "login" ? "Create an account" : "Back to sign in"}
+                  {mode === "login"
+                    ? "Create an account"
+                    : mode === "signup" && notice
+                      ? "Sign in"
+                      : "Back to sign in"}
                 </button>
               </p>
             )}
-            <p role="status">{notice}</p>
             {!db && (
               <aside className="notice">
                 <strong>Account setup required</strong>

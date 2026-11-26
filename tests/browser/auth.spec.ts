@@ -84,3 +84,43 @@ test("an unconfigured deployment explains why sign-in is unavailable", async ({
   await expect(page.getByText(/\.env\.example/)).toBeVisible();
   await expect(submit).toBeDisabled();
 });
+
+test("signup guidance does not claim an email was sent to a returning user", async ({
+  page,
+}) => {
+  await page.goto("/account/create");
+  const submit = page.getByRole("button", { name: "Create account", exact: true });
+  await expect(submit).toBeVisible();
+  test.skip(!(await submit.isEnabled()), "Supabase is unconfigured.");
+
+  const email = "returning@example.test";
+  const signupEndpoint = "**/auth/v1/signup*";
+  const responses = [
+    {
+      json: { id: "64349aa5-366b-4383-b952-316e2d8cf4a7", email, identities: [] },
+    },
+    {
+      status: 422,
+      json: { error_code: "user_already_exists", msg: "User already registered" },
+    },
+  ];
+  await page.getByLabel("Email address").fill(email);
+  const password = page.locator("input[name=password]");
+  await password.fill("test-password");
+  for (const response of responses) {
+    await page.route(signupEndpoint, (route) => route.fulfill(response), {
+      times: 1,
+    });
+    const completed = page.waitForResponse(signupEndpoint);
+    await submit.click();
+    await completed;
+    await expect(page.locator("main").getByRole("status")).toHaveText(
+      "If this is a new account, check your inbox for a confirmation link.",
+    );
+    await expect(page.locator("main").getByRole("alert")).toHaveCount(0);
+  }
+  await page.getByRole("button", { name: "Sign in", exact: true }).click();
+  await expect(page.getByRole("heading", { name: "Welcome back." })).toBeVisible();
+  await expect(page.getByLabel("Email address")).toHaveValue(email);
+  await expect(password).toHaveValue("");
+});

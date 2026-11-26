@@ -1,9 +1,9 @@
 {
-  "name": "drapedeck",
+  "name": "digidrobe",
   "version": "1.0.0",
   "private": true,
   "type": "module",
-  "repository": "https://github.com/saifmodan2006/drapedeck.git",
+  "repository": "https://github.com/saifmodan2006/DigiDrobe.git",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
@@ -36,5 +36,6 @@
     "supabase": "3.4.0",
     "tsx": "4.23.15",
     "typescript": "7.0.2"
-  }
+  },
+  "homepage": "https://digidrobe-app.vercel.app"
 }

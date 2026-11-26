@@ -1,7 +1,9 @@
 {
   "name": "DigiDrobe",
-  "slug": "drapedeck",
+  "slug": "digidrobe",
   "descriptor": "Digital Wardrobe",
   "tagline": "Your wardrobe. New possibilities.",
-  "repositoryOwner": "saifmodan2006"
+  "repositoryOwner": "saifmodan2006",
+  "repositoryName": "DigiDrobe",
+  "siteUrl": "https://digidrobe-app.vercel.app"
 }

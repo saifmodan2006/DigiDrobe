@@ -2,6 +2,8 @@
 
 Your wardrobe. New possibilities.
 
+[Open DigiDrobe](https://digidrobe-app.vercel.app)
+
 <!-- brand-end -->
 
 A private digital wardrobe built with Next.js, TypeScript, Supabase Auth, Postgres and private object storage. Photograph one piece, crop and rotate it, review its transparent cutout, then style it with pieces you own. The outfit board arranges garments for visual comparison. Physical fit is outside its scope.
@@ -76,4 +78,4 @@ Signup and password-reset email designs are in `supabase/templates/`. Apply the 
 
 The interface uses Bodoni Moda for headlines, Instrument Serif Italic for emphasis, and Satoshi for UI text. Satoshi loads from the official Fontshare CDN, with system fallbacks. The photographed fabric letters are decorative WebP assets and sit alongside selectable text. [Satoshi](https://www.fontshare.com/fonts/satoshi)
 
-Edit `lib/brand.json` to change the name, tagline, descriptor, repository owner or slug. The header, authentication, page titles and metadata consume this configuration. Run `npm run brand` to update the package, lockfile and README heading. Changing the actual GitHub repository name or Git remote requires a separate repository administration action.
+Edit `lib/brand.json` to change the name, tagline, descriptor, package slug, GitHub repository or public site URL. The header, authentication, page titles and metadata use the brand configuration. Run `npm run brand` to update the package, lockfile and README heading and link. When changing the public domain, update the site URL and account callback URLs in Supabase Auth.

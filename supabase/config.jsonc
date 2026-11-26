@@ -290,6 +290,16 @@
       //   "sender_name": "Admin"
       // },
 
+      "template": {
+        "confirmation": {
+          "subject": "Confirm your email for DigiDrobe",
+          "content_path": "./supabase/templates/confirmation.html"
+        },
+        "recovery": {
+          "subject": "Reset your DigiDrobe password",
+          "content_path": "./supabase/templates/recovery.html"
+        }
+      },
       // Uncomment to customize email template
       // "template": {
       //   "invite": {

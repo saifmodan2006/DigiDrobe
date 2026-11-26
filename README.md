@@ -72,6 +72,8 @@ Browser tests use installed Chrome on Windows or Playwright Chromium elsewhere. 
 
 ## Branding
 
+Signup and password-reset email designs are in `supabase/templates/`. Apply the HTML and matching subjects under Authentication → Emails in the hosted Supabase dashboard when updating production. [Supabase email templates](https://supabase.com/docs/guides/auth/auth-email-templates)
+
 The interface uses Bodoni Moda for headlines, Instrument Serif Italic for emphasis, and Satoshi for UI text. Satoshi loads from the official Fontshare CDN, with system fallbacks. The photographed fabric letters are decorative WebP assets and sit alongside selectable text. [Satoshi](https://www.fontshare.com/fonts/satoshi)
 
 Edit `lib/brand.json` to change the name, tagline, descriptor, repository owner or slug. The header, authentication, page titles and metadata consume this configuration. Run `npm run brand` to update the package, lockfile and README heading. Changing the actual GitHub repository name or Git remote requires a separate repository administration action.

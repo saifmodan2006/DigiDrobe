@@ -4,10 +4,9 @@ import "@fontsource-variable/bodoni-moda/standard.css";
 import "@fontsource/instrument-serif/latin-400-italic.css";
 import "./style.css";
 export const metadata: Metadata = {
+  metadataBase: new URL(brand.siteUrl),
   title: { default: title, template: "%s · " + brand.name },
   applicationName: brand.name,
-  description: brand.tagline,
-  openGraph: { title, description: brand.tagline },
 };
 export default function Layout({ children }: { children: React.ReactNode }) {
   return (

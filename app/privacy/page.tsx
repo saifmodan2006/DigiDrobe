@@ -1,7 +1,11 @@
 import Link from "next/link";
 import type { Metadata } from "next";
 
-export const metadata: Metadata = { title: "Privacy policy" };
+export const metadata: Metadata = {
+  title: "Privacy policy",
+  description: "Learn how DigiDrobe handles Google sign-in, wardrobe photos and account data.",
+  alternates: { canonical: "/privacy" },
+};
 
 export default function PrivacyPage() {
   return (

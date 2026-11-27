@@ -18,7 +18,7 @@ const steps = [
       "Sort pieces by category, save favorites, and build collections for work, weekends, or travel.",
   },
   {
-    title: "Put looks together",
+    title: "Plan outfits from your own clothes",
     description:
       "Build an outfit from your own clothes, compare combinations, and save the ones you want to wear.",
   },
@@ -77,8 +77,9 @@ export default function Landing() {
               )}
             </h1>
             <p className="landing-lede">
-              See everything you own, put outfits together, and save the looks
-              you’ll actually wear.
+              Build a private digital wardrobe from photos of your clothes.
+              Organize your closet, plan outfits from pieces you own, and save
+              the looks you want to wear.
             </p>
             <div className="landing-actions">
               <Link className="landing-button" href="/account/create">
@@ -95,7 +96,7 @@ export default function Landing() {
               src="/editorial.webp"
               alt="A cream shirt, an olive jacket and tailored trousers hanging from a brass rail"
               fill
-              priority
+              preload
               sizes="(max-width: 760px) 92vw, 48vw"
             />
           </figure>
@@ -148,6 +149,38 @@ export default function Landing() {
             <Link className="landing-button" href="/account/create">
               Start your wardrobe <ArrowUpRight size={17} aria-hidden="true" />
             </Link>
+          </div>
+        </section>
+
+        <section className="landing-workflow" aria-labelledby="questions-title">
+          <div className="landing-wrap">
+            <h2 id="questions-title">Digital wardrobe questions</h2>
+            <ul className="landing-steps">
+              <li>
+                <h3>How do I digitize my wardrobe?</h3>
+                <p>
+                  Photograph one item at a time or upload a picture from your
+                  camera roll. Crop it, review the background removal, then
+                  save the item to your closet.
+                </p>
+              </li>
+              <li>
+                <h3>Can I build outfits from clothes I already own?</h3>
+                <p>
+                  Yes. Use the outfit board to combine clothes from your
+                  wardrobe. You can keep a favorite piece in place, try other
+                  combinations, and save the outfits you like.
+                </p>
+              </li>
+              <li>
+                <h3>Can other people see my wardrobe?</h3>
+                <p>
+                  Your garment photos and outfits are private to your account.
+                  Read how DigiDrobe handles your data in the{" "}
+                  <Link href="/privacy">privacy policy</Link>.
+                </p>
+              </li>
+            </ul>
           </div>
         </section>
       </main>

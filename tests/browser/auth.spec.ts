@@ -34,7 +34,7 @@ test("sign in, account creation and password recovery remain keyboard accessible
   await expect(page).toHaveTitle(new RegExp(brand.name));
   await expect(page.locator('meta[name="description"]')).toHaveAttribute(
     "content",
-    brand.tagline,
+    "Sign in to your private DigiDrobe wardrobe.",
   );
 
   const email = page.getByLabel("Email address");

@@ -1,7 +1,11 @@
 import Link from "next/link";
 import type { Metadata } from "next";
 
-export const metadata: Metadata = { title: "Terms of use" };
+export const metadata: Metadata = {
+  title: "Terms of use",
+  description: "Read the terms for using DigiDrobe to organize clothing photos and plan outfits.",
+  alternates: { canonical: "/terms" },
+};
 
 export default function TermsPage() {
   return (

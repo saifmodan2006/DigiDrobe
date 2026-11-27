@@ -281,9 +281,22 @@ button.text-button {
 .intro {
   margin-top: 0.55rem;
 }
-.auth-google {
+button.auth-google {
   margin-top: 0.75rem;
+  gap: 10px;
+  padding-inline: 12px;
+  background: #fff;
+  border-color: #747775;
+  color: #1f1f1f;
   font-weight: 600;
+}
+button.auth-google:hover:not(:disabled) {
+  background: #f8f9fa;
+}
+.auth-google img {
+  flex: none;
+  width: 18px;
+  height: auto;
 }
 .policy-links {
   display: flex;

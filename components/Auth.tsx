@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useRef, useState, type FormEvent } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import { Eye, EyeOff, LockKeyhole } from "lucide-react";
 import { brand } from "../lib/config";
@@ -249,6 +250,13 @@ export default function Auth({
                 disabled={busy}
                 onClick={continueWithGoogle}
               >
+                <Image
+                  src="/google-g.png"
+                  alt=""
+                  width={200}
+                  height={204}
+                  unoptimized
+                />
                 Continue with Google
               </button>
             )}

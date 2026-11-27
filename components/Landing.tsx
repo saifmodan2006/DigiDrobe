@@ -2,7 +2,6 @@ import Image from "next/image";
 import Link from "next/link";
 import { ArrowDown, ArrowUpRight, LockKeyhole } from "lucide-react";
 import { brand } from "../lib/config";
-import { outfitGuide, wardrobeGuide } from "../lib/guides";
 import Logo from "./Logo";
 import LegacyAuthCallback from "./LegacyAuthCallback";
 import "./landing.css";
@@ -26,7 +25,6 @@ const steps = [
 ];
 
 export default function Landing() {
-  const [taglineLead, ...taglineRest] = brand.tagline.split(/(?<=\.) /);
   return (
     <div className="landing" id="top">
       <LegacyAuthCallback />
@@ -43,10 +41,10 @@ export default function Landing() {
             <a href="#how-it-works">How it works</a>
           </nav>
           <div className="landing-actions">
-            <Link className="landing-signin" href="/account">
+            <Link className="landing-signin" href="/account" prefetch={false}>
               Sign in
             </Link>
-            <Link className="landing-button" href="/account/create">
+            <Link className="landing-button" href="/account/create" prefetch={false}>
               Create account
             </Link>
           </div>
@@ -58,32 +56,27 @@ export default function Landing() {
           aria-labelledby="landing-title"
         >
           <div className="landing-intro">
-            <p className="landing-kicker">{brand.descriptor}</p>
+            <p className="landing-kicker">Closet organizer &amp; outfit planner</p>
             <h1 id="landing-title">
-              {taglineLead}
-              {taglineRest.length > 0 && (
-                <>
-                  <br />
-                  <span className="landing-title-highlight">
-                    <em>{taglineRest.join(" ")}</em>
-                    <Image
-                      src="/fabric-d-mark.webp"
-                      alt=""
-                      width={76}
-                      height={76}
-                      unoptimized
-                    />
-                  </span>
-                </>
-              )}
+              Your digital wardrobe.
+              <br />
+              <span className="landing-title-highlight">
+                <em>New possibilities.</em>
+                <Image
+                  src="/fabric-d-mark.webp"
+                  alt=""
+                  width={76}
+                  height={76}
+                  unoptimized
+                />
+              </span>
             </h1>
             <p className="landing-lede">
-              Build a private digital wardrobe from photos of your clothes.
-              Organize your closet, plan outfits from pieces you own, and save
-              the looks you want to wear.
+              Photograph your clothes, sort them into collections, and save
+              outfits made from pieces you already own.
             </p>
             <div className="landing-actions">
-              <Link className="landing-button" href="/account/create">
+              <Link className="landing-button" href="/account/create" prefetch={false}>
                 Create your wardrobe{" "}
                 <ArrowUpRight size={17} aria-hidden="true" />
               </Link>
@@ -147,7 +140,7 @@ export default function Landing() {
               <LockKeyhole size={18} aria-hidden="true" /> Your photos and
               outfits stay private to your account.
             </p>
-            <Link className="landing-button" href="/account/create">
+            <Link className="landing-button" href="/account/create" prefetch={false}>
               Start your wardrobe <ArrowUpRight size={17} aria-hidden="true" />
             </Link>
           </div>
@@ -162,8 +155,7 @@ export default function Landing() {
                 <p>
                   Photograph one item at a time or upload a picture from your
                   camera roll. Crop it, review the background removal, then
-                  save the item to your closet. Read how to{" "}
-                  <Link href={wardrobeGuide.path}>digitize your wardrobe</Link>.
+                  save the item to your closet.
                 </p>
               </li>
               <li>
@@ -171,8 +163,7 @@ export default function Landing() {
                 <p>
                   Yes. Use the outfit board to combine clothes from your
                   wardrobe. You can keep a favorite piece in place, try other
-                  combinations, and save the outfits you like. See how to{" "}
-                  <Link href={outfitGuide.path}>plan outfits from your own clothes</Link>.
+                  combinations, and save the outfits you like.
                 </p>
               </li>
               <li>

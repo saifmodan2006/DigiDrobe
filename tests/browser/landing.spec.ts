@@ -5,7 +5,7 @@ test("visitors can explore the homepage and choose either account form", async (
 }, info) => {
   await page.goto("/");
   await expect(page.getByRole("heading", { level: 1 })).toHaveText(
-    /Your wardrobe\.\s*New possibilities\./,
+    /Your digital wardrobe\.\s*New possibilities\./,
   );
   await expect(
     page.getByRole("heading", { name: "From camera roll to outfit." }),
@@ -33,7 +33,7 @@ test("visitors can explore the homepage and choose either account form", async (
   ).toBeVisible();
   await page.getByRole("link", { name: "DigiDrobe home" }).click();
   await expect(page.getByRole("heading", { level: 1 })).toContainText(
-    "Your wardrobe.",
+    "Your digital wardrobe.",
   );
   await header.getByRole("link", { name: "Create account" }).click();
   await expect(page).toHaveURL(/\/account\/create$/);

@@ -281,6 +281,30 @@ button.text-button {
 .intro {
   margin-top: 0.55rem;
 }
+.auth-google {
+  margin-top: 0.75rem;
+  font-weight: 600;
+}
+.policy-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1rem;
+  font-size: 0.85rem;
+}
+.auth-inner .policy-links {
+  margin-top: 1rem;
+}
+.policy-page {
+  width: min(100% - 2.5rem, 44rem);
+  margin: 3rem auto;
+  line-height: 1.65;
+}
+.policy-page h1, .policy-page h2, .policy-page .policy-links {
+  margin-top: 1.25rem;
+}
+.policy-page h2 {
+  font-size: 1.5rem;
+}
 .switcher {
   display: flex;
   padding: 0.25rem;

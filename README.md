@@ -63,6 +63,8 @@ Defaults are 10 MiB per original, 24 megapixels per decoded image, 500 items per
 
 ## Verification
 
+For Google sign-in, create a web OAuth client in Google Auth Platform with the deployed origin and the callback URL shown in the Google provider settings in Supabase Auth. Save the Google client ID and secret in that Supabase provider, and add `https://digidrobe-app.vercel.app/account?provider=google` to the Supabase redirect allow list. Set `NEXT_PUBLIC_GOOGLE_SIGN_IN=true` in Vercel Production and redeploy. [Supabase Google sign-in setup](https://supabase.com/docs/guides/auth/social-sign-in/auth-google)
+
 The Vercel production deployment runs a read-only Supabase database check three times a day using the schedules in `vercel.json`. Set a secret named `CRON_SECRET` in the Vercel production environment before deploying those schedules on another Vercel project.
 
 ```sh

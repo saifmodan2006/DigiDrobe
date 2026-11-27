@@ -157,6 +157,10 @@ export default function Landing() {
             <Logo />
           </Link>
           <span>{brand.tagline}</span>
+          <nav aria-label="Site policies" className="policy-links">
+            <Link href="/privacy">Privacy policy</Link>
+            <Link href="/terms">Terms of use</Link>
+          </nav>
           <a href="#top">Back to top ↑</a>
         </div>
       </footer>

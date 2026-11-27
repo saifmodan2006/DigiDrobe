@@ -8,6 +8,8 @@ import Logo from "./Logo";
 const minimumPasswordLength = 6;
 const confirmationNotice =
   "If this is a new account, check your inbox for a confirmation link.";
+const googleSignInEnabled = process.env.NEXT_PUBLIC_GOOGLE_SIGN_IN === "true";
+const googleSignInError = "Google sign-in didn’t finish. Please try again.";
 export default function Auth({
   recovery = false,
   initialMode = "login",
@@ -24,6 +26,14 @@ export default function Auth({
     [busy, working] = useState(false);
   const emailField = useRef<HTMLInputElement>(null);
   const focusAfterSwitch = useRef(false);
+  useEffect(() => {
+    const url = new URL(location.href);
+    if (url.searchParams.get("provider") !== "google") return;
+    const fragment = new URLSearchParams(url.hash.slice(1));
+    if (!url.searchParams.has("error") && !fragment.has("error")) return;
+    setError(googleSignInError);
+    history.replaceState(null, "", url.pathname);
+  }, []);
   const heading = recovery
     ? "Choose a new password"
     : mode === "login"
@@ -101,6 +111,23 @@ export default function Auth({
       } else {
         setError(message(e));
       }
+    } finally {
+      working(false);
+    }
+  }
+  async function continueWithGoogle() {
+    if (!db || busy) return;
+    working(true);
+    tell("");
+    setError("");
+    try {
+      const { error } = await db.auth.signInWithOAuth({
+        provider: "google",
+        options: { redirectTo: location.origin + "/account?provider=google" },
+      });
+      if (error) throw error;
+    } catch {
+      setError(googleSignInError);
     } finally {
       working(false);
     }
@@ -215,6 +242,16 @@ export default function Auth({
                         : "Send recovery link"}
               </button>
             </form>
+            {googleSignInEnabled && db && !recovery && mode !== "forgot" && (
+              <button
+                type="button"
+                className="full auth-google"
+                disabled={busy}
+                onClick={continueWithGoogle}
+              >
+                Continue with Google
+              </button>
+            )}
             {error && (
               <p className="notice" role="alert">
                 {error}
@@ -251,6 +288,10 @@ export default function Auth({
                 </p>
               </aside>
             )}
+            <nav aria-label="Site policies" className="policy-links">
+              <Link href="/privacy">Privacy policy</Link>
+              <Link href="/terms">Terms of use</Link>
+            </nav>
           </div>
         </section>
       </div>

@@ -1,6 +1,29 @@
 import { expect, test } from "@playwright/test";
 import brand from "../../lib/brand.json" with { type: "json" };
 
+test("Google sign-in uses the account callback and shows a retry message on cancellation", async ({
+  page,
+}) => {
+  test.skip(process.env.NEXT_PUBLIC_GOOGLE_SIGN_IN !== "true", "Google sign-in is disabled.");
+  await page.goto("/account/create");
+  const callback = new URL("/account?provider=google", page.url());
+  await page.route("**/auth/v1/authorize?**", async (route) => {
+    const request = new URL(route.request().url());
+    expect(request.searchParams.get("provider")).toBe("google");
+    expect(request.searchParams.get("redirect_to")).toBe(callback.href);
+    await route.fulfill({
+      status: 302,
+      headers: { location: `${callback.href}&error=access_denied` },
+    });
+  });
+  await page.getByRole("button", { name: "Continue with Google" }).click();
+  await expect(page.getByRole("main").getByRole("alert")).toHaveText(
+    "Google sign-in didn’t finish. Please try again.",
+  );
+  await expect(page).toHaveURL(/\/account$/);
+  await expect(page.getByRole("button", { name: "Continue with Google" })).toBeEnabled();
+});
+
 test("sign in, account creation and password recovery remain keyboard accessible", async ({
   page,
 }, info) => {

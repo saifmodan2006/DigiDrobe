@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { ArrowDown, ArrowUpRight, LockKeyhole } from "lucide-react";
 import { brand } from "../lib/config";
+import { outfitGuide, wardrobeGuide } from "../lib/guides";
 import Logo from "./Logo";
 import LegacyAuthCallback from "./LegacyAuthCallback";
 import "./landing.css";
@@ -161,7 +162,8 @@ export default function Landing() {
                 <p>
                   Photograph one item at a time or upload a picture from your
                   camera roll. Crop it, review the background removal, then
-                  save the item to your closet.
+                  save the item to your closet. Read how to{" "}
+                  <Link href={wardrobeGuide.path}>digitize your wardrobe</Link>.
                 </p>
               </li>
               <li>
@@ -169,7 +171,8 @@ export default function Landing() {
                 <p>
                   Yes. Use the outfit board to combine clothes from your
                   wardrobe. You can keep a favorite piece in place, try other
-                  combinations, and save the outfits you like.
+                  combinations, and save the outfits you like. See how to{" "}
+                  <Link href={outfitGuide.path}>plan outfits from your own clothes</Link>.
                 </p>
               </li>
               <li>

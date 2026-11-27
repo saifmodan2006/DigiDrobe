@@ -318,6 +318,19 @@ button.auth-google:hover:not(:disabled) {
 .policy-page h2 {
   font-size: 1.5rem;
 }
+.guide-breadcrumb {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem 0.65rem;
+  font-size: 0.875rem;
+}
+.guide-page h1 {
+  line-height: 1.05;
+  margin-bottom: 1rem;
+}
+.guide-page p + p {
+  margin-top: 0.75rem;
+}
 .switcher {
   display: flex;
   padding: 0.25rem;
